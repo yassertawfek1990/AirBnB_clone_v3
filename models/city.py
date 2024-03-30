@@ -6,6 +6,7 @@ from os import getenv
 import sqlalchemy
 from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
+import os
 
 
 class City(BaseModel, Base):
@@ -19,6 +20,19 @@ class City(BaseModel, Base):
         state_id = ""
         name = ""
 
-    def __init__(self, *args, **kwargs):
-        """initializes city"""
-        super().__init__(*args, **kwargs)
+    if storage_type != 'db':
+        @property
+        def places(self):
+            """
+            getter for places
+            :return: list
+            """
+            all_places = models.storage.all("Place")
+
+            result = []
+
+            for obj in all_places.values():
+                if str(obj.city_id) == str(self.id):
+                    result.append(obj)
+
+            return result
