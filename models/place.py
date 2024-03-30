@@ -1,22 +1,24 @@
 #!/usr/bin/python
 """ holds class Place"""
+import os
 import models
 from models.base_model import BaseModel, Base
 from os import getenv
 import sqlalchemy
 from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table
 from sqlalchemy.orm import relationship
+storage_type = os.environ.get('HBNB_TYPE_STORAGE')
 
-if models.storage_t == 'db':
+if os.getenv("HBNB_TYPE_STORAGE") == "db":
     place_amenity = Table('place_amenity', Base.metadata,
-                          Column('place_id', String(60),
-                                 ForeignKey('places.id', onupdate='CASCADE',
-                                            ondelete='CASCADE'),
-                                 primary_key=True),
-                          Column('amenity_id', String(60),
-                                 ForeignKey('amenities.id', onupdate='CASCADE',
-                                            ondelete='CASCADE'),
-                                 primary_key=True))
+                          Column('place_id',
+                                 String(60),
+                                 ForeignKey('places.id')),
+                          Column('amenity_id',
+                                 String(60),
+                                 ForeignKey('amenities.id',
+                                            ondelete="CASCADE")))
+
 
 
 class Place(BaseModel, Base):
