@@ -1,12 +1,11 @@
 #!/usr/bin/python
 """ holds class City"""
-import models
-from models.base_model import BaseModel, Base
-from os import getenv
-import sqlalchemy
-from sqlalchemy import Column, String, ForeignKey
-from sqlalchemy.orm import relationship
 import os
+from models.base_model import BaseModel, Base
+from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, Float, ForeignKey
+import models
+storage_type = os.environ.get('HBNB_TYPE_STORAGE')
 
 
 class City(BaseModel, Base):
