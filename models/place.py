@@ -40,10 +40,10 @@ class Place(BaseModel, Base):
                                  backref="place_amenities",
                                  viewonly=False)
     else:
-        city_id = ""
-        user_id = ""
-        name = ""
-        description = ""
+        city_id = ''
+        user_id = ''
+        name = ''
+        description = ''
         number_rooms = 0
         number_bathrooms = 0
         max_guest = 0
@@ -52,29 +52,39 @@ class Place(BaseModel, Base):
         longitude = 0.0
         amenity_ids = []
 
-    def __init__(self, *args, **kwargs):
-        """initializes Place"""
-        super().__init__(*args, **kwargs)
-
-    if models.storage_t != 'db':
-        @property
-        def reviews(self):
-            """getter attribute returns the list of Review instances"""
-            from models.review import Review
-            review_list = []
-            all_reviews = models.storage.all(Review)
-            for review in all_reviews.values():
-                if review.place_id == self.id:
-                    review_list.append(review)
-            return review_list
-
+    if storage_type != "db":
         @property
         def amenities(self):
-            """getter attribute returns the list of Amenity instances"""
-            from models.amenity import Amenity
-            amenity_list = []
-            all_amenities = models.storage.all(Amenity)
-            for amenity in all_amenities.values():
-                if amenity.place_id == self.id:
-                    amenity_list.append(amenity)
-            return amenity_list
+            """
+            ammenities getter
+            :return: list of amenitites
+            """
+            amenity_objs = []
+
+            for a_id in self.amenity_ids:
+                amenity_objs.append(models.storage.get("Amenity", str(a_id)))
+
+            return amenity_objs
+
+        @amenities.setter
+        def amenities(self, amenity):
+            """
+            ammenities setter
+            :return:
+            """
+            self.amenity_ids.append(amenity.id)
+
+        @property
+        def reviews(self):
+            """
+            reviews getter
+            :return: list of reviews
+            """
+            all_reviews = models.storage.all("Review")
+            place_reviews = []
+
+            for review in all_reviews.values():
+                if review.place_id == self.id:
+                    place_reviews.append(review)
+
+            return place_reviews
